@@ -159,7 +159,13 @@ def encrypt_v3(image: np.ndarray, date_str: str, user_key: str) -> np.ndarray:
         rng = np.random.default_rng(channel_seed)
         idx = rng.permutation(L - 3)
         body_shuffled = flat[3:][idx]
-        cipher_flat = np.concatenate([t, body_shuffled])
+        
+        # 只在第一个通道保存时间信息，避免重复
+        if i == 0:
+            cipher_flat = np.concatenate([t, body_shuffled])
+        else:
+            cipher_flat = np.concatenate([flat[:3], body_shuffled])
+        
         encrypted_channel = cipher_flat.reshape(channel.shape)
         encrypted_channels.append(encrypted_channel)
     
@@ -179,7 +185,11 @@ def decrypt_v3(cipher: np.ndarray, user_key: str) -> np.ndarray:
         h, w = cipher.shape
         c = 1
     
-    t = cipher.flat[:3].astype(np.uint8)  # 从第一个通道获取时间信息
+    # 从第一个通道获取时间信息
+    if c == 1:
+        t = cipher.flat[:3].astype(np.uint8)
+    else:
+        t = cipher[:, :, 0].flat[:3].astype(np.uint8)  # 只从第一个通道获取时间信息
     k = key2bytes_v3(user_key)
     
     # 分别处理每个颜色通道
