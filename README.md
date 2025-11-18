@@ -1,0 +1,1 @@
+fork或下载仓库后，安装好相关依赖，直接运行image_encryption_gui.py即可。
