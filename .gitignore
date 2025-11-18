@@ -16,6 +16,9 @@
 *.tiff
 *.webp
 
+# 但不排除version2.0演示图片
+!encrypted_image_v2.png
+
 # 忽略PDF文件
 *.pdf
 
