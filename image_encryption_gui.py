@@ -518,9 +518,17 @@ class ImageEncryptionApp:
         
         # 根据版本选择解密方法
         if version == "1.0":
+            # 版本1.0只处理灰度图像
+            if len(enc_img.shape) == 3:
+                enc_img = cv2.cvtColor(enc_img, cv2.COLOR_BGR2GRAY)
+                self.log_result("将加密图像转换为灰度图像")
             decrypted = decrypt_v1(enc_img)
             output_filename = "decrypted_image_v1.png"
         elif version == "2.0":
+            # 版本2.0只处理灰度图像
+            if len(enc_img.shape) == 3:
+                enc_img = cv2.cvtColor(enc_img, cv2.COLOR_BGR2GRAY)
+                self.log_result("将加密图像转换为灰度图像")
             decrypted = decrypt_v2(enc_img, user_key)
             output_filename = "decrypted_image_v2.png"
         else:  # version == "3.0"
